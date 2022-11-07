@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import com.anish.grovyplaylist.R
@@ -39,10 +40,19 @@ class PlaylistFragment : Fragment() {
 
         setupViewModel()
 
+        viewModel.loader.observe(this as LifecycleOwner, { loading ->
+
+            when (loading) {
+                true -> view.findViewById<ProgressBar>(R.id.loader).visibility = View.VISIBLE
+                false -> view.findViewById<ProgressBar>(R.id.loader).visibility = View.GONE
+            }
+
+        })
+
         viewModel.playlists.observe(this as LifecycleOwner, { playlists ->
 
             if (playlists.getOrNull() != null) {
-                setupList(view, playlists.getOrNull()!!)
+                setupList(view.findViewById(R.id.playlists_list), playlists.getOrNull()!!)
             } else {
 
             }

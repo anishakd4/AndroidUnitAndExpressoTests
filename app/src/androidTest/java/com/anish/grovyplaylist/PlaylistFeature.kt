@@ -10,6 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.adevinta.android.barista.assertion.BaristaRecyclerViewAssertions.assertRecyclerViewItemCount
 import com.adevinta.android.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
+import com.adevinta.android.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
 import com.adevinta.android.barista.internal.matcher.DrawableMatcher.Companion.withDrawable
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -22,8 +23,7 @@ import org.junit.runner.RunWith
 import org.junit.Assert.*
 import org.junit.Rule
 
-@RunWith(AndroidJUnit4::class)
-class PlaylistFeature {
+class PlaylistFeature : BaseUITest() {
 
     val mActivityRule = ActivityScenarioRule(MainActivity::class.java)
         @Rule get
@@ -39,6 +39,7 @@ class PlaylistFeature {
 
     @Test
     fun displayListOfPlaylists() {
+        Thread.sleep(4000)
         assertRecyclerViewItemCount(R.id.playlists_list, 10)
 
         onView(
@@ -58,9 +59,38 @@ class PlaylistFeature {
         onView(
             allOf(
                 withId(R.id.playlist_image),
-                isDescendantOfA(nthChildOf(withId(R.id.playlists_list), 0))
+                isDescendantOfA(nthChildOf(withId(R.id.playlists_list), 1))
             )
         ).check(matches(withDrawable(R.mipmap.playlist))).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun displaysLoaderWhileFetchingThePlaylist() {
+        assertDisplayed(R.id.loader)
+    }
+
+    @Test
+    fun hidesLoader() {
+        Thread.sleep(4000)
+        assertNotDisplayed(R.id.loader)
+    }
+
+    @Test
+    fun displaysRockImageForRockListItems() {
+        Thread.sleep(4000)
+        onView(
+            allOf(
+                withId(R.id.playlist_image),
+                isDescendantOfA(nthChildOf(withId(R.id.playlists_list), 0))
+            )
+        ).check(matches(withDrawable(R.mipmap.rock))).check(matches(isDisplayed()))
+
+        onView(
+            allOf(
+                withId(R.id.playlist_image),
+                isDescendantOfA(nthChildOf(withId(R.id.playlists_list), 3))
+            )
+        ).check(matches(withDrawable(R.mipmap.rock))).check(matches(isDisplayed()))
     }
 
     fun nthChildOf(parentMatcher: Matcher<View>, childPosition: Int): Matcher<View> {

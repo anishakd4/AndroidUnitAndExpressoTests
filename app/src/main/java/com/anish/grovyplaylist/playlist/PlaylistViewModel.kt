@@ -1,6 +1,7 @@
 package com.anish.grovyplaylist.playlist
 
 import androidx.lifecycle.*
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,8 +17,12 @@ class PlaylistViewModel(private val repository: PlaylistRepository) :
 //            }
 //        }
 //    }
+
+    val loader = MutableLiveData<Boolean>()
+
     val playlists = liveData {
-        emitSource(repository.getPlaylists().asLiveData())
+        loader.postValue(true)
+        emitSource(repository.getPlaylists().onEach { loader.postValue(false) }.asLiveData())
     }
 
 }
