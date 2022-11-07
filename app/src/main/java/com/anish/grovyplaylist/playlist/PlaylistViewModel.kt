@@ -2,8 +2,10 @@ package com.anish.grovyplaylist.playlist
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PlaylistViewModel(private val repository: PlaylistRepository) : ViewModel() {
+class PlaylistViewModel(private val repository: PlaylistRepository) :
+    ViewModel() {
 
     //    val playlists = MutableLiveData<Result<List<Playlist>>>()
 //
